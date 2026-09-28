@@ -2,12 +2,44 @@
 
 ## Low-Light Face Anti-Spoofing and Identity Verification
 
-**Prepared by:** Priyanshu, Saksham, Harshit, Devansh  
+**Submitted by:**
+
+| Student | Roll number |
+| --- | --- |
+| Priyanshu Yadav | 2023UEA3643 |
+| Saksham | 2023UEA6654 |
+| Harshit | 2023UEA6601 |
+| Devansh Gupta | 2023UEA6605 |
+
 **Department:** Electronics and Communication Engineering  
 **Institution:** NSUT  
 **Supervisor:** Rashmi Gupta  
 **Academic Session:** 2026-27  
-**Date:** ____________________
+**Date:** _________________________
+
+**Supervisor's Signature:** __________________________________
+
+---
+
+### Report Status
+
+| Item                           | Status                                                    |
+| ------------------------------ | --------------------------------------------------------- |
+| Application prototype          | Implemented                                               |
+| Anti-spoofing integration      | Implemented with two local MiniFASNet weights             |
+| Identity verification pipeline | Implemented with UniFace detection and ArcFace embeddings |
+
+### Contents
+
+1. [Introduction](#1-introduction)
+2. [Literature Survey](#2-literature-survey)
+3. [Problem Statement and Methodology](#3-problem-statement-and-methodology)
+4. [Work Done Till Date](#4-work-done-till-date)
+5. [Results and Discussion](#5-results-and-discussion)
+6. [Future Work](#6-future-work)
+7. [Conclusion](#7-conclusion)
+8. [References](#references)
+9. [Appendices](#appendix-a-current-project-file-mapping)
 
 ---
 
@@ -116,6 +148,12 @@ The implemented architecture contains the following modules:
 - **Decision module:** combines liveness status, detection status, embedding status, and similarity threshold.
 - **Interface module:** displays images, scores, pipeline status, diagnostics, and the final result.
 
+#### Figure 1. Simple view of the implemented pipeline
+
+**Reference + target images** → **Anti-spoofing check** → **Face detection and matching** → **Verification result**
+
+The architecture separates liveness from identity matching. This ordering is central to the security logic: a target that fails liveness cannot proceed to an identity-verified result.
+
 ### 3.3 Detailed processing flow
 
 #### Step 1: Reference enrolment
@@ -183,9 +221,11 @@ The current application loads both available weights during target evaluation. T
 
 ### 4.3 Training investigation
 
-The repository includes a training path based on a MultiFTNet model, a dataset loader, data augmentation, classification loss, feature loss, stochastic gradient descent, learning-rate milestones, TensorBoard logging, and periodic model checkpoints. Training configuration includes a nominal 25-epoch schedule and a dataset path under `datasets/rgb_image`.
+The repository includes a training path based on a MultiFTNet model, a dataset loader, data augmentation, classification loss, feature loss, stochastic gradient descent, learning-rate milestones, TensorBoard logging, and periodic model checkpoints. Its configuration points to `datasets/rgb_image` (with a patch-size subdirectory), but the repository does not include a dataset manifest or identify a named dataset used in the team's training attempt.
 
-Training was investigated as a possible route for project-specific anti-spoofing adaptation. However, the current running application uses the supplied pretrained MiniFASNet weights. The report therefore does not present training accuracy or newly trained weights as final project results. A controlled training experiment can be added later when a verified, labelled, and appropriately separated dataset is available.
+An in-house model-training attempt was made, but the available project records do not identify its dataset or establish that its checkpoint is used by the application. The current running application uses the bundled pretrained MiniFASNetV2 and MiniFASNetV1SE weights. Therefore, no specific dataset can be accurately credited as the training dataset for the model currently used by the application, and no training accuracy or project-trained checkpoint is claimed here. A reproducible training experiment can be added when a verified, labelled, and appropriately separated dataset is documented.
+
+**Dataset used for the running model:** The repository does not specify the original training dataset for the bundled pretrained MiniFASNet weights. The training configuration only names the expected local directory `datasets/rgb_image`; this is a path, not a dataset name. Accordingly, the exact dataset used for the team's training attempt is **not documented in the current project files**.
 
 ### 4.4 Pipeline assembly
 
@@ -243,6 +283,16 @@ Each group should be evaluated under normal, dim, and very dim illumination. The
 
 For presentation-attack detection, report APCER, BPCER, and ACER. For identity verification, report FAR, FRR, and EER where the data support those measurements. Also record face-detection failures, embedding failures, processing time, and results broken down by illumination condition.
 
+#### Table 1. Proposed evaluation matrix
+
+| Evaluation dimension | Conditions or classes                    | Primary observations                   |
+| -------------------- | ---------------------------------------- | -------------------------------------- |
+| Subject type         | Bona fide, impostor, presentation attack | Liveness and identity decisions        |
+| Illumination         | Normal, dim, very dim                    | Detection failures and score stability |
+| Anti-spoofing        | Live class versus attack rejection       | APCER, BPCER, ACER                     |
+| Identity matching    | Same identity versus different identity  | FAR, FRR, EER                          |
+| Runtime              | CPU and CUDA, where available            | Model-loading and per-image latency    |
+
 ### 5.5 Discussion of limitations
 
 The current prototype uses a single selected face from each detection result. Multiple-face scenes are not yet handled as a separate workflow. The model weights are used as supplied, and their original training conditions may not represent the target low-light environment. The current system also processes uploaded still images rather than a continuous camera stream.
@@ -280,30 +330,30 @@ The project should not yet be presented as a validated low-light biometric syste
 
 ## References
 
-1. MiniVision, *Silent-Face-Anti-Spoofing*, MiniFASNet implementation and model family documentation.
-2. Deng, J. et al., *RetinaFace: Single-stage Dense Face Localisation in the Wild*, arXiv preprint, 2019.
-3. Deng, J. et al., *ArcFace: Additive Angular Margin Loss for Deep Face Recognition*, Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2019.
-4. Wang, Y. et al., *Face Anti-Spoofing Using a Multi-Channel Convolutional Neural Network*, research literature on presentation-attack detection.
-5. ISO/IEC 30107-3, *Information technology: Biometric presentation attack detection — Testing and reporting*.
+1. MiniVision, _Silent-Face-Anti-Spoofing_, MiniFASNet implementation and model family documentation.
+2. Deng, J. et al., _RetinaFace: Single-stage Dense Face Localisation in the Wild_, arXiv preprint, 2019.
+3. Deng, J. et al., _ArcFace: Additive Angular Margin Loss for Deep Face Recognition_, Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2019.
+4. Wang, Y. et al., _Face Anti-Spoofing Using a Multi-Channel Convolutional Neural Network_, research literature on presentation-attack detection.
+5. ISO/IEC 30107-3, _Information technology: Biometric presentation attack detection — Testing and reporting_.
 6. The project repository source files: Streamlit application, anti-spoofing inference code, MiniFASNet model definitions, crop-generation utilities, training configuration, and dataset loader.
 
 ---
 
 ## Appendix A: Current Project File Mapping
 
-| Project component | Current implementation |
-|---|---|
-| Interface | Streamlit application in `app.py` |
-| Image decoding | OpenCV |
-| Anti-spoofing detector | OpenCV DNN face-region detector |
-| Anti-spoofing models | MiniFASNetV2 and MiniFASNetV1SE local weights |
-| Anti-spoofing crop | Model-specific crop and resize utility |
-| Face detection | UniFace RetinaFace interface |
-| Identity recognition | UniFace ArcFace interface |
-| Similarity | Cosine similarity |
-| Current match threshold | `0.40` |
-| Supported input | JPG, JPEG, PNG uploads |
-| Current output | Liveness, detection, embedding, similarity, and decision states |
+| Project component       | Current implementation                                          |
+| ----------------------- | --------------------------------------------------------------- |
+| Interface               | Streamlit application in `app.py`                               |
+| Image decoding          | OpenCV                                                          |
+| Anti-spoofing detector  | OpenCV DNN face-region detector                                 |
+| Anti-spoofing models    | MiniFASNetV2 and MiniFASNetV1SE local weights                   |
+| Anti-spoofing crop      | Model-specific crop and resize utility                          |
+| Face detection          | UniFace RetinaFace interface                                    |
+| Identity recognition    | UniFace ArcFace interface                                       |
+| Similarity              | Cosine similarity                                               |
+| Current match threshold | `0.40`                                                          |
+| Supported input         | JPG, JPEG, PNG uploads                                          |
+| Current output          | Liveness, detection, embedding, similarity, and decision states |
 
 ## Appendix B: Suggested Demonstration Sequence
 
