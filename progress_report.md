@@ -15,9 +15,9 @@
 **Institution:** NSUT  
 **Supervisor:** Rashmi Gupta  
 **Academic Session:** 2026-27  
-**Date:** _________________________
+**Date:** 
 
-**Supervisor's Signature:** __________________________________
+**Supervisor's Signature:** 
 
 ---
 
