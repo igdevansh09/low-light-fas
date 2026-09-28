@@ -1,0 +1,7 @@
+streamlit
+pillow
+numpy
+torch
+torchvision
+opencv-python-headless<5.0.0
+uniface[cpu]
